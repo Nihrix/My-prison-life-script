@@ -1,0 +1,145 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Nihrixis prison life script BETA", "Sentinel")
+
+local Tab = Window:NewTab("Player")
+local PlayerSection = Tab:NewSection("Player")
+PlayerSection:NewSlider("WalkSpeed", "Faster speed", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = s
+end)
+PlayerSection:NewSlider("JumpPower", "SliderInfo", 500, 0, function(s) -- 500 (MaxValue) | 0 (MinValue)
+    game.Players.LocalPlayer.Character.Humanoid.JumpPower = s
+end)
+
+PlayerSection:NewTextBox("NoClip Key", "Activates the key to NoClip!", function(NoClip)
+    print("key set to "..NoClip)
+    local StealthMode = true -- If game has an anticheat that checks the logs
+
+    local Indicator
+
+    if not StealthMode then
+        local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+        print("NOCLIP: Press Q to Activate")
+        Indicator = Instance.new("TextLabel", ScreenGui)
+        Indicator.AnchorPoint = Vector2.new(0, 1)
+        Indicator.Position = UDim2.new(0, 0, 1, 0)
+        Indicator.Size = UDim2.new(0, 200, 0, 50)
+        Indicator.BackgroundTransparency = 1
+        Indicator.TextScaled = true
+        Indicator.TextStrokeTransparency = 0
+        Indicator.TextColor3 = Color3.new(0, 0, 0)
+        Indicator.TextStrokeColor3 = Color3.new(1, 1, 1)
+        Indicator.Text = "Noclip: Enabled"
+    end
+
+    local noclip = true
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    local mouse = player:GetMouse()
+
+    mouse.KeyDown:Connect(function(key)
+        if key == NoClip then
+            noclip = not noclip
+
+            if not StealthMode then
+                Indicator.Text = "Noclip: " .. (noclip and "Enabled" or "Disabled")
+            end
+        end
+    end)
+
+    while true do
+        player = game.Players.LocalPlayer
+        character = player.Character
+
+        if noclip then
+            for _, v in pairs(character:GetDescendants()) do
+                pcall(function()
+                    if v:IsA("BasePart") then
+                        v.CanCollide = false
+                    end
+                end)
+            end
+        end
+
+        game:GetService("RunService").Stepped:wait()
+    end
+end)
+
+PlayerSection:NewDropdown("Guns", "Gun giver", {"Redmington 870", "AK-47", "Key Card"}, function(s)
+     
+local A_1 = game:GetService("Workspace")["Prison_ITEMS"].giver["Remington 870"].ITEMPICKUP
+local Event = game:GetService("Workspace").Remote.ItemHandler
+Event:InvokeServer(A_1)
+
+local A_1 = game:GetService("Workspace")["Prison_ITEMS"].giver["AK-47"].ITEMPICKUP
+local Event = game:GetService("Workspace").Remote.ItemHandler
+Event:InvokeServer(A_1)
+
+local A_1 = game:GetService("Workspace")["Prison_ITEMS"].single["Key card"].ITEMPICKUP
+local Event = game:GetService("Workspace").Remote.ItemHandler
+Event:InvokeServer(A_1)
+
+ print(currentOption)
+end)
+
+local Tab = Window:NewTab("Scripthub")
+local ScriptsSection = Tab:NewSection("Scripts")
+ScriptsSection:NewLabel("All script owner credits are in the scripts themselves.")
+ScriptsSection:NewButton("Septex admin commands", "Gives septex admin commands", function()loadstring(game:HttpGet(('https://raw.githubusercontent.com/XTheMasterX/Scripts/Main/PrisonLife'),true))()
+    print("Clicked")
+end)
+ScriptsSection:NewButton("Jake11price Crash server", "An amazing Crash server script from Jake11", function()-- Made By Jake11price --
+-- Crash Server --
+local Gun = "Remington 870"
+
+local Player = game.Players.LocalPlayer.Name
+
+game.Workspace.Remote.ItemHandler:InvokeServer(workspace.Prison_ITEMS.giver[Gun].ITEMPICKUP)
+
+for i,v in pairs(game.Players[Player].Backpack:GetChildren()) do
+    if v.name == (Gun) then
+        v.Parent = game.Players.LocalPlayer.Character
+    end
+end
+
+Gun = game.Players[Player].Character[Gun]
+
+game.Players.LocalPlayer.Character:FindFirstChildOfClass("Humanoid"):UnequipTools()
+
+function FireGun(target)
+coroutine.resume(coroutine.create(function()
+local bulletTable = {}
+table.insert(bulletTable, {
+Hit = target,
+Distance = 100,
+Cframe = CFrame.new(0,1,1),
+RayObject = Ray.new(Vector3.new(0.1,0.2), Vector3.new(0.3,0.4))
+})
+game.ReplicatedStorage.ShootEvent:FireServer(bulletTable, Gun)
+wait()
+end))
+end
+
+while game:GetService("RunService").Stepped:wait() do
+for count = 0, 10, 10 do
+FireGun()
+end
+end
+    print("Clicked")
+end)
+
+
+local Tab = Window:NewTab("Misc")
+local MiscSection = Tab:NewSection("Misc")
+MiscSection:NewButton("Remove All Fences", "All Fences Will Be Removed!", function()
+			for i,l in pairs(game.Workspace["Prison_Fences"]:GetChildren()) do
+				if l.Name == "fence" then
+					l:Destroy()
+		end
+	end
+end)
+	
+		MiscSection:NewButton("Remove All Gates", "All Fences Will Be Removed!", function()
+			game.Workspace["Prison_Fences"]["Prison_Gate"]:Destroy()
+			game.Workspace["Prison_Fences"]["gate"]:Destroy()
+end)
